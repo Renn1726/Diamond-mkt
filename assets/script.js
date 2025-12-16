@@ -39,44 +39,72 @@ const creatives = [
 
 const clients = [
   {
-    name: "TechCorp",
-    logo: "https://images.unsplash.com/photo-1599305445671-ac291c95aaa9?w=200&h=100&fit=crop",
+    name: "São Benedito",
+    logo: "./assets/images/clients/SB.png",
   },
   {
-    name: "Innovation Labs",
-    logo: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=200&h=100&fit=crop",
+    name: "Ubajara",
+    logo: "./assets/images/clients/Ubajara.png",
   },
   {
-    name: "Digital Solutions",
-    logo: "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=200&h=100&fit=crop",
+    name: "Mactube",
+    logo: "./assets/images/clients/MACTUBE.png",
   },
   {
-    name: "Creative Agency",
-    logo: "https://images.unsplash.com/photo-1572044162444-ad60f128bdea?w=200&h=100&fit=crop",
+    name: "Cachaça Isaías",
+    logo: "./assets/images/clients/CACHAÇA LOGO.png",
   },
   {
-    name: "Smart Business",
-    logo: "https://images.unsplash.com/photo-1556761175-b413da4baf72?w=200&h=100&fit=crop",
+    name: "PRINCESA DA SERRA",
+    logo: "./assets/images/clients/PRINCESA LOGO.png",
   },
   {
-    name: "Future Tech",
-    logo: "https://images.unsplash.com/photo-1551434678-e076c223a692?w=200&h=100&fit=crop",
+    name: "Espettu`s",
+    logo: "./assets/images/clients/ES.png",
   },
   {
-    name: "Growth Partners",
-    logo: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=200&h=100&fit=crop",
+    name: "Lymax",
+    logo: "./assets/images/clients/LYMAX.png",
   },
   {
-    name: "Global Systems",
-    logo: "https://images.unsplash.com/photo-1557838923-2985c318be48?w=200&h=100&fit=crop",
+    name: "Casa do plantador",
+    logo: "./assets/images/clients/CASA DO PLANTADOR.png",
   },
   {
-    name: "Data Insights",
-    logo: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=200&h=100&fit=crop",
+    name: "3 Marias",
+    logo: "./assets/images/clients/3MARIAS.png",
   },
   {
-    name: "Cloud Services",
-    logo: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=200&h=100&fit=crop",
+    name: "Contmac",
+    logo: "./assets/images/clients/CONTMAC.png",
+  },
+  {
+    name: "Daniel",
+    logo: "./assets/images/clients/DANIEL LOGO.png",
+  },
+  {
+    name: "Graça",
+    logo: "./assets/images/clients/GRAÇA LOGO.png",
+  },
+  {
+    name: "OCULARE",
+    logo: "./assets/images/clients/OCULARE LOGO.png",
+  },
+  {
+    name: "POVO",
+    logo: "./assets/images/clients/POVO LOGO.png",
+  },
+  {
+    name: "LINHARES",
+    logo: "./assets/images/clients/LINHARES LOGO.png",
+  },
+  {
+    name: "Posto SB",
+    logo: "./assets/images/clients/POSTO LOGO.png",
+  },
+  {
+    name: "PONTO DA CONSTRUÇÃO",
+    logo: "./assets/images/clients/PCONS LOGO.png",
   },
 ];
 
@@ -224,64 +252,80 @@ const loadingInterval = setInterval(() => {
 // Set current year
 document.getElementById("year").textContent = new Date().getFullYear();
 
-// Creatives Carousel
-let currentCreativeIndex = 0;
+// Creatives Carousel - Infinite Slide
+const carousel = document.getElementById("creatives-carousel");
+
+let currentIndex = 1;
+let slideWidth;
+let track;
 
 function initCreativesCarousel() {
-  const carousel = document.getElementById("creatives-carousel");
-  const indicators = document.getElementById("creatives-indicators");
+  track = document.createElement("div");
+  track.className = "carousel-track";
 
-  creatives.forEach((creative, index) => {
-    const slide = document.createElement("div");
-    slide.className = "carousel-slide" + (index === 0 ? " active" : "");
-    slide.innerHTML = `
-                    <img src="${creative.image}" alt="${creative.title}">
-                    <div class="carousel-overlay"></div>
-                    <div class="carousel-content">
-                        <span class="carousel-category">${creative.category}</span>
-                        <h3 class="carousel-title">${creative.title}</h3>
-                    </div>
-                `;
-    carousel.appendChild(slide);
+  const slides = creatives.map(createCreativeSlide);
 
-    const dot = document.createElement("button");
-    dot.className = "indicator-dot" + (index === 0 ? " active" : "");
-    dot.onclick = () => goToCreative(index);
-    indicators.appendChild(dot);
-  });
+  const firstClone = createCreativeSlide(creatives[0]);
+  firstClone.id = "firstClone";
+
+  const lastClone = createCreativeSlide(creatives[creatives.length - 1]);
+  lastClone.id = "lastClone";
+
+  track.appendChild(lastClone);
+  slides.forEach((slide) => track.appendChild(slide));
+  track.appendChild(firstClone);
+
+  carousel.appendChild(track);
+
+  slideWidth = carousel.offsetWidth;
+  track.style.transform = `translateX(${-slideWidth * currentIndex}px)`;
+
+  track.addEventListener("transitionend", handleInfiniteLoop);
+
+  autoplayInterval = setInterval(nextCreative, 5000);
+}
+
+function createCreativeSlide(creative) {
+  const slide = document.createElement("div");
+  slide.className = "carousel-slide";
+  slide.innerHTML = `
+    <img src="${creative.image}" alt="${creative.title}">
+    <div class="carousel-overlay"></div>
+    <div class="carousel-content">
+      <span class="carousel-category">${creative.category}</span>
+      <h3 class="carousel-title">${creative.title}</h3>
+    </div>
+  `;
+  return slide;
 }
 
 function nextCreative() {
-  currentCreativeIndex = (currentCreativeIndex + 1) % creatives.length;
-  updateCreativeSlide();
+  currentIndex++;
+  track.style.transition = "transform 0.6s ease";
+  track.style.transform = `translateX(${-slideWidth * currentIndex}px)`;
 }
 
 function prevCreative() {
-  currentCreativeIndex =
-    (currentCreativeIndex - 1 + creatives.length) % creatives.length;
-  updateCreativeSlide();
+  currentIndex--;
+  track.style.transition = "transform 0.6s ease";
+  track.style.transform = `translateX(${-slideWidth * currentIndex}px)`;
 }
 
-function goToCreative(index) {
-  currentCreativeIndex = index;
-  updateCreativeSlide();
+function handleInfiniteLoop() {
+  const slides = track.querySelectorAll(".carousel-slide");
+
+  if (slides[currentIndex].id === "firstClone") {
+    track.style.transition = "none";
+    currentIndex = 1;
+    track.style.transform = `translateX(${-slideWidth * currentIndex}px)`;
+  }
+
+  if (slides[currentIndex].id === "lastClone") {
+    track.style.transition = "none";
+    currentIndex = slides.length - 2;
+    track.style.transform = `translateX(${-slideWidth * currentIndex}px)`;
+  }
 }
-
-function updateCreativeSlide() {
-  const slides = document.querySelectorAll(".carousel-slide");
-  const dots = document.querySelectorAll(".indicator-dot");
-
-  slides.forEach((slide, index) => {
-    slide.classList.toggle("active", index === currentCreativeIndex);
-  });
-
-  dots.forEach((dot, index) => {
-    dot.classList.toggle("active", index === currentCreativeIndex);
-  });
-}
-
-// Auto-advance carousel
-setInterval(nextCreative, 5000);
 
 // Clients Carousel
 function initClientsCarousel() {
@@ -402,4 +446,10 @@ document.addEventListener("keydown", (e) => {
     });
     closeVideoModal();
   }
+
+  window.addEventListener("resize", () => {
+    slideWidth = carousel.offsetWidth;
+    track.style.transition = "none";
+    track.style.transform = `translateX(${-slideWidth * currentIndex}px)`;
+  });
 });
