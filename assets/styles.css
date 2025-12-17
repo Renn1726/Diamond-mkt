@@ -1034,7 +1034,7 @@ header {
   display: flex;
   gap: 32px;
   width: max-content;
-  animation: scrollClients 60s linear infinite;
+  animation: scrollClients 80s linear infinite;
 }
 
 @keyframes scrollClients {
