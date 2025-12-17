@@ -51,6 +51,23 @@ const clients = [
     logo: "./assets/images/clients/Carnaubal.png",
   },
   {
+    name: "Saul",
+    logo: "./assets/images/clients/SAUl.png",
+  },
+  {
+    name: "Chiquinho",
+    logo: "./assets/images/clients/CHIQUINHO.png",
+  },
+  {
+    name: "Agnes",
+    logo: "./assets/images/clients/AGNES.png",
+  },
+  {
+    name: "Juciane",
+    logo: "./assets/images/clients/Juciane.png",
+  },
+
+  {
     name: "Mactube",
     logo: "./assets/images/clients/MACTUBE.png",
   },
