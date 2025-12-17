@@ -47,6 +47,10 @@ const clients = [
     logo: "./assets/images/clients/Ubajara.png",
   },
   {
+    name: "Carnaubal",
+    logo: "./assets/images/clients/Carnaubal.png",
+  },
+  {
     name: "Mactube",
     logo: "./assets/images/clients/MACTUBE.png",
   },
